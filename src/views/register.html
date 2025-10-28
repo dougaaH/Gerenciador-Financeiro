@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Cadastro</title>
     <!-- Você pode usar o mesmo CSS do login ou criar um novo -->
-    <link rel="stylesheet" href="style.css"> 
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <h1>Criar Conta</h1>
     <form id="register-form">
-        <input type="email" id="email" placeholder="Seu melhor e-mail" required>
-        <input type="password" id="password" placeholder="Crie uma senha forte" required>
-        <button type="submit">Cadastrar</button>
+      <input type="email" id="email" placeholder="Seu melhor e-mail" required />
+      <input
+        type="password"
+        id="password"
+        placeholder="Crie uma senha forte"
+        required
+      />
+      <button type="submit">Cadastrar</button>
     </form>
-    <p id="message" style="color: red;"></p>
+    <button
+      id="exit-app-btn"
+      style="background-color: #6c757d; margin-top: 10px"
+    >
+      Sair
+    </button>
+    <p id="message" style="color: red"></p>
     <a href="#" id="go-to-login">Já tem uma conta? Faça login</a>
     <script src="../renderer/register.js"></script>
-</body>
+  </body>
 </html>
-

@@ -112,6 +112,11 @@ ipcMain.on('open-login-window', () => {
     });
 });
 
+// Ouve o evento para fechar a aplicação
+ipcMain.on('quit-app', () => {
+    app.quit();
+});
+
 // --- Template do Menu Superior ---
 const menuTemplate = [
     {

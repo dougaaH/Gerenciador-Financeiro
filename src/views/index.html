@@ -5,31 +5,41 @@
     <link rel="stylesheet" href="../assets/dashboard.css" />
   </head>
   <body>
-    <h1>Dashboard</h1>
+    <div class="main-container">
+      <div class="content-column">
+        <div class="header">
+          <h1>Dashboard</h1>
+          <!-- Botão principal com a nova classe -->
+          <button id="add-transaction-btn" class="btn btn-primary">
+            Adicionar Nova Transação
+          </button>
+        </div>
 
-    <button id="add-transaction-btn">Adicionar Nova Transação</button>
+        <!-- Tabela para listar transações -->
+        <h2>Transações Recentes</h2>
+        <!-- Tabela com a nova classe do UI Kit -->
+        <table id="transactions-table" class="data-table">
+          <thead>
+            <tr>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Tipo</th>
+              <th>Categoria</th>
+              <th>Data</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Linhas serão inseridas via JS -->
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Área para os gráficos -->
-    <div style="width: 50%">
-      <canvas id="myChart"></canvas>
+      <div class="sidebar-column">
+        <h2>Resumo</h2>
+        <canvas id="myChart"></canvas>
+      </div>
     </div>
-
-    <!-- Tabela para listar transações -->
-    <h2>Transações Recentes</h2>
-    <table id="transactions-table">
-      <thead>
-        <tr>
-          <th>Descrição</th>
-          <th>Valor</th>
-          <th>Tipo</th>
-          <th>Data</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Linhas serão inseridas via JS -->
-      </tbody>
-    </table>
 
     <!-- Modal para Adicionar/Editar Transação -->
     <div id="transaction-modal" class="modal">
@@ -39,22 +49,51 @@
         <form id="transaction-form">
           <input type="hidden" id="transaction-id" />
 
-          <label for="description">Descrição:</label>
-          <input type="text" id="description" required />
+          <label for="description">Descrição</label>
+          <input
+            type="text"
+            id="description"
+            placeholder="Ex: Compra no supermercado"
+            required
+          />
 
-          <label for="amount">Valor:</label>
-          <input type="number" id="amount" step="0.01" required />
+          <label for="amount">Valor</label>
+          <input
+            type="number"
+            id="amount"
+            step="0.01"
+            placeholder="0.00"
+            required
+          />
 
-          <label for="type">Tipo:</label>
+          <label for="type">Tipo</label>
           <select id="type" required>
             <option value="receita">Receita</option>
             <option value="despesa">Despesa</option>
           </select>
 
-          <label for="date">Data:</label>
+          <label for="category">Categoria:</label>
+          <select id="category" required>
+            <option value="alimentacao">Alimentação</option>
+            <option value="moradia">Moradia</option>
+            <option value="transporte">Transporte</option>
+            <option value="lazer">Lazer</option>
+            <option value="saude">Saúde</option>
+            <option value="salario">Salário</option>
+            <option value="outros">Outros</option>
+          </select>
+
+          <label for="date">Data</label>
           <input type="date" id="date" required />
 
-          <button type="submit">Salvar</button>
+          <!-- Botão de submit com as novas classes -->
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="width: 100%; margin-top: 20px"
+          >
+            Salvar
+          </button>
         </form>
       </div>
     </div>

@@ -27,4 +27,7 @@ contextBridge.exposeInMainWorld('api', {
   },
   // Envia eventos para o main process
   send: (channel, data) => ipcRenderer.send(channel, data),
+
+  // Função para fechar a aplicação
+  quitApp: () => ipcRenderer.send('quit-app'),
 });

@@ -7,6 +7,7 @@ const closeModalBtn = document.querySelector('.close-button');
 const addTransactionBtn = document.getElementById('add-transaction-btn');
 const transactionForm = document.getElementById('transaction-form');
 const modalTitle = document.getElementById('modal-title');
+const balanceAmountEl = document.getElementById('balance-amount');
 
 // --- Variáveis Globais ---
 let allTransactions = []; // Cache local das transações
@@ -34,14 +35,18 @@ function renderTransactions(transactions) {
 
     transactions.forEach(tx => {
         const row = document.createElement('tr');
+        // Simplificando a tabela para o novo layout
         row.innerHTML = `
             <td>${tx.description}</td>
             <td>R$ ${tx.amount.toFixed(2)}</td>
             <td>${tx.type}</td>
+            <td style="color: ${tx.type === 'receita' ? 'var(--primary-accent)' : 'var(--danger-red)'}; font-weight: 600;">${tx.type === 'receita' ? '+' : '-'} R$ ${tx.amount.toFixed(2)}</td>
+            <td>${tx.category}</td>
             <td>${new Date(tx.date).toLocaleDateString()}</td>
                 <td>
-                    <button class="edit-btn" data-id="${tx.id}">Editar</button>
-                    <button class="delete-btn" data-id="${tx.id}">Excluir</button>
+            <td>
+                    <button class="btn btn-outline edit-btn" data-id="${tx.id}" style="padding: 6px 12px; font-size: 0.8rem;">Editar</button>
+                    <button class="btn btn-danger delete-btn" data-id="${tx.id}" style="padding: 6px 12px; font-size: 0.8rem;">Excluir</button>
                 </td>
         `;
         transactionsTableBody.appendChild(row);
@@ -55,7 +60,13 @@ function renderTransactions(transactions) {
     });
 
     // Atualiza o gráfico
+    // Atualiza o gráfico e o saldo
     updateChart(receitas, despesas);
+    updateBalance(receitas, despesas);
+}
+function updateBalance(receitas, despesas) {
+    const saldo = receitas - despesas;
+    balanceAmountEl.textContent = `R$ ${saldo.toFixed(2)}`;
 }
 
 async function loadTransactions() {
@@ -84,6 +95,7 @@ function openEditModal(id) {
     document.getElementById('description').value = transaction.description;
     document.getElementById('amount').value = transaction.amount;
     document.getElementById('type').value = transaction.type;
+    document.getElementById('category').value = transaction.category;
     document.getElementById('date').value = transaction.date;
 
     modal.style.display = 'block';
@@ -101,6 +113,7 @@ async function handleFormSubmit(event) {
         description: document.getElementById('description').value,
         amount: parseFloat(document.getElementById('amount').value),
         type: document.getElementById('type').value,
+        category: document.getElementById('category').value,
         date: document.getElementById('date').value,
     };
 
@@ -150,6 +163,18 @@ const myChart = new Chart(ctx, {
                 'rgba(255, 99, 132, 0.7)',
             ],
         }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom', // Coloca a legenda embaixo
+            },
+            title: {
+                display: false, // O título já está no card (<h3>)
+                text: 'Resumo Financeiro'
+            }
+        },
     },
 });
 
