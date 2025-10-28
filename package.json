@@ -1,0 +1,22 @@
+{
+  "name": "gerenciador-financeiro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^38.4.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.76.1",
+    "chart.js": "^4.5.1",
+    "dotenv": "^17.2.3"
+  }
+}
