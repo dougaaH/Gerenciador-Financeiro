@@ -57,14 +57,21 @@ function createRegisterWindow() {
     registerWindow.loadFile('src/views/register.html');
 }
 
-app.whenReady().then(() => {
-    // Em vez de criar a janela principal, começamos pela de login
-    createLoginWindow();
-    // createMainWindow(); // Esta será chamada após o login bem-sucedido
+app.whenReady().then(async () => {
+    // Verifica se há uma sessão ativa do Supabase
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session) {
+        // Se o usuário já estiver logado, abre a janela principal
+        createMainWindow();
+    } else {
+        // Se não, abre a janela de login
+        createLoginWindow();
+    }
 
     // Lógica para macOS
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
+        if (BrowserWindow.getAllWindows().length === 0 && !session) {
             createLoginWindow();
         }
     });
@@ -107,7 +114,7 @@ ipcMain.on('open-login-window', () => {
     // Fecha todas as janelas que não sejam a principal ou a de login
     BrowserWindow.getAllWindows().forEach(win => {
         const url = win.webContents.getURL();
-        if (url.includes('register.html')) {
+        if (url.includes('register.html') || url.includes('login.html')) {
             win.close();
         }
     });

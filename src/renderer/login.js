@@ -1,46 +1,45 @@
+// src/renderer/login.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
-    const rememberMeCheckbox = document.getElementById('remember-me');
-    const messageEl = document.getElementById('message');
+    const messageDiv = document.getElementById('message');
     const goToRegisterLink = document.getElementById('go-to-register');
-    const closeWindowBtn = document.getElementById('close-window-btn');
+    const exitAppBtn = document.getElementById('exit-app-btn');
 
-    // 1. Preencher o e-mail se estiver salvo
-    const savedEmail = localStorage.getItem('rememberedEmail');
-    if (savedEmail) {
-        emailInput.value = savedEmail;
-        rememberMeCheckbox.checked = true;
+    if (goToRegisterLink) {
+        goToRegisterLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.api.send('open-register-window');
+        });
     }
 
-    // 2. Lógica de submit do formulário
-    loginForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        messageEl.textContent = ''; // Limpa mensagens de erro
+    if (exitAppBtn) {
+        exitAppBtn.addEventListener('click', () => {
+            window.api.quitApp();
+        });
+    }
 
-        const email = emailInput.value;
-        const password = passwordInput.value;
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
 
-        const { data, error } = await window.api.login(email, password);
+            messageDiv.textContent = '';
 
-        if (error) {
-            messageEl.textContent = 'E-mail ou senha inválidos.';
-            return;
-        }
+            const { data, error } = await window.api.login(email, password);
 
-        // 3. Salvar ou remover o e-mail com base no checkbox
-        if (rememberMeCheckbox.checked) {
-            localStorage.setItem('rememberedEmail', email);
-        } else {
-            localStorage.removeItem('rememberedEmail');
-        }
-
-        // Notifica o processo principal sobre o sucesso
-        window.api.notifyLoginSuccess(data);
-    });
-
-    // Navegação
-    goToRegisterLink.addEventListener('click', () => window.api.send('open-register-window'));
-    closeWindowBtn.addEventListener('click', () => window.api.closeWindow());
+            if (error) {
+                if (error.message.includes('Email not confirmed')) {
+                    messageDiv.textContent = 'Por favor, confirme seu cadastro no e-mail que enviamos para você.';
+                } else {
+                    messageDiv.textContent = 'E-mail ou senha inválidos.';
+                }
+            } else if (data.user) {
+                window.api.notifyLoginSuccess(data);
+            }
+        });
+    }
 });
