@@ -1,6 +1,7 @@
 // main.js
 require('dotenv').config();
-const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, shell, dialog } = require('electron');
+const ExcelJS = require('exceljs');
 const supabase = require('./src/database/connect');
 const path = require('path');
 
@@ -249,4 +250,90 @@ ipcMain.handle('db:update-transaction', async (event, id, updates) => {
     const { data, error } = await supabase.from('transactions').update(updates).match({ id: id }).select();
     if (error) console.error('Erro ao atualizar transação:', error);
     return { data, error };
+});
+
+// --- Handler para Exportar Relatório para Excel ---
+ipcMain.handle('export:excel-report', async (event, reportData) => {
+    try {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Relatório Mensal');
+
+        // Definir cabeçalhos
+        worksheet.columns = [
+            { header: 'Mês', key: 'month', width: 15 },
+            { header: 'Total Receitas', key: 'receitas', width: 20 },
+            { header: 'Total Despesas', key: 'despesas', width: 20 },
+            { header: 'Saldo do Mês', key: 'saldo', width: 20 }
+        ];
+
+        // Estilo para o cabeçalho
+        worksheet.getRow(1).eachCell((cell) => {
+            cell.font = { bold: true, color: { argb: 'FFFFFFFF' } }; // Branco
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF0A1931' } // primary-dark
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.border = {
+                top: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+                left: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+                bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+                right: { style: 'thin', color: { argb: 'FFD3D3D3' } }
+            };
+        });
+
+        // Adicionar dados e aplicar estilos
+        reportData.forEach((row, index) => {
+            const excelRow = worksheet.addRow({
+                month: row.month,
+                receitas: row.receitas,
+                despesas: row.despesas,
+                saldo: row.saldo
+            });
+
+            // Estilo para as células
+            excelRow.eachCell((cell, colNumber) => {
+                cell.alignment = { vertical: 'middle', horizontal: 'left' };
+                cell.border = {
+                    top: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+                    left: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+                    bottom: { style: 'thin', color: { argb: 'FFD3D3D3' } },
+                    right: { style: 'thin', color: { argb: 'FFD3D3D3' } }
+                };
+                if (colNumber === 2) { // Receitas
+                    cell.font = { color: { argb: 'FF50C878' } }; // primary-accent
+                } else if (colNumber === 3) { // Despesas
+                    cell.font = { color: { argb: 'FFE57373' } }; // danger-red
+                } else if (colNumber === 4) { // Saldo
+                    cell.font = { bold: true, color: { argb: row.saldo >= 0 ? 'FF50C878' : 'FFE57373' } };
+                }
+            });
+
+            // Fundo alternado para as linhas
+            if (index % 2 === 0) {
+                excelRow.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FFF8FAFC' } // background-light (um cinza bem claro)
+                };
+            }
+        });
+
+        const { filePath } = await dialog.showSaveDialog(mainWindow, {
+            title: 'Salvar Relatório Mensal',
+            defaultPath: `relatorio_mensal_${new Date().toISOString().slice(0, 10)}.xlsx`,
+            filters: [{ name: 'Arquivos Excel', extensions: ['xlsx'] }]
+        });
+
+        if (filePath) {
+            await workbook.xlsx.writeFile(filePath);
+            return { success: true };
+        }
+        return { success: false, error: 'Nenhum arquivo selecionado.' };
+
+    } catch (error) {
+        console.error('Erro ao exportar relatório para Excel:', error);
+        return { success: false, error: error.message };
+    }
 });

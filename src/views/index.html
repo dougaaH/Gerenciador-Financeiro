@@ -129,7 +129,36 @@
 
       <!-- Tela 3: Relatórios (Escondida por padrão) -->
       <div id="reports-view" class="view view-hidden">
-        <h1 class="dashboard-title">Relatórios Mensais</h1>
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Relatórios Mensais</h1>
+        </div>
+
+        <div class="report-controls">
+          <div class="date-filter">
+            <label for="start-date">De:</label>
+            <input type="date" id="start-date" />
+            <label for="end-date">Até:</label>
+            <input type="date" id="end-date" />
+          </div>
+          <button id="export-data-btn" class="btn btn-outline">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Exportar Dados
+          </button>
+        </div>
+
         <div class="grid-card" style="margin-top: 20px">
           <h3>Resumo Mensal</h3>
           <table id="reports-table" class="data-table">

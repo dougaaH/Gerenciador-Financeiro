@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld('api', {
   deleteTransaction: (id) => ipcRenderer.invoke('db:delete-transaction', id),
   updateTransaction: (id, updates) => ipcRenderer.invoke('db:update-transaction', id, updates),
 
+  // Função para exportar relatório para Excel
+  exportExcelReport: (reportData) => ipcRenderer.invoke('export:excel-report', reportData),
+
   // Recebe eventos do main process (ex: para abrir o modal de nova transação)
   on: (channel, callback) => {
     const subscription = (event, ...args) => callback(...args);

@@ -10,6 +10,10 @@ const balanceAmountEl = document.getElementById('balance-amount');
 const allTransactionsTableBody = document.querySelector('#all-transactions-table tbody');
 const searchInput = document.getElementById('search-input');
 const reportsTableBody = document.getElementById('reports-table-body');
+const startDateInput = document.getElementById('start-date');
+const endDateInput = document.getElementById('end-date');
+const exportDataBtn = document.getElementById('export-data-btn');
+
 
 // --- Elementos de Navegação ---
 const navDashboard = document.getElementById('nav-dashboard');
@@ -21,6 +25,7 @@ const reportsView = document.getElementById('reports-view');
 
 // --- Variáveis Globais ---
 let allTransactions = []; // Cache local das transações
+let currentMonthlyReportData = []; // Armazena os dados do relatório mensal para exportação
 
 // --- Instâncias dos Gráficos (declaradas, mas inicializadas após o DOM) ---
 let categoryChart;
@@ -55,6 +60,14 @@ if (searchInput) {
         renderAllTransactionsTable(filteredTransactions);
     });
 }
+if (startDateInput && endDateInput) {
+    startDateInput.addEventListener('change', () => generateMonthlyReport(allTransactions));
+    endDateInput.addEventListener('change', () => generateMonthlyReport(allTransactions));
+}
+if (exportDataBtn) { // Renomeado para exportReportToExcel
+    exportDataBtn.addEventListener('click', exportReportToExcel);
+}
+
 
 // --- Funções ---
 function updateDashboardView(transactions) {
@@ -246,10 +259,23 @@ function showView(viewName) {
 function generateMonthlyReport(transactions) {
     const monthlySummary = {};
 
-    transactions.forEach(tx => {
+    const startDate = startDateInput.value;
+    const endDate = endDateInput.value;
+
+    const filteredTransactions = transactions.filter(tx => {
+        if (startDate && tx.date < startDate) {
+            return false;
+        }
+        if (endDate && tx.date > endDate) {
+            return false;
+        }
+        return true;
+    });
+
+    filteredTransactions.forEach(tx => {
         const month = tx.date.substring(0, 7); // Formato "YYYY-MM"
         if (!monthlySummary[month]) {
-            monthlySummary[month] = { receitas: 0, despesas: 0 };
+            monthlySummary[month] = { receitas: 0, despesas: 0, saldo: 0 };
         }
         if (tx.type === 'receita') {
             monthlySummary[month].receitas += tx.amount;
@@ -259,9 +285,11 @@ function generateMonthlyReport(transactions) {
     });
 
     reportsTableBody.innerHTML = '';
+    const reportRows = []; // Coleta os dados para exportação
     Object.keys(monthlySummary).sort().reverse().forEach(month => {
         const summary = monthlySummary[month];
         const saldo = summary.receitas - summary.despesas;
+        summary.saldo = saldo; // Armazena o saldo para exportação
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${month}</td>
@@ -272,7 +300,32 @@ function generateMonthlyReport(transactions) {
             </td>
         `;
         reportsTableBody.appendChild(row);
+
+        // Adiciona os dados estruturados para a exportação
+        reportRows.push({
+            month: month,
+            receitas: summary.receitas,
+            despesas: summary.despesas,
+            saldo: saldo
+        });
     });
+    currentMonthlyReportData = reportRows; // Atualiza a variável global com os dados do relatório
+}
+
+async function exportReportToExcel() { // Renomeada a função
+    if (currentMonthlyReportData.length === 0) {
+        alert('Não há dados no relatório para exportar.');
+        return;
+    }
+
+    const { success, error } = await window.api.exportExcelReport(currentMonthlyReportData);
+
+    if (success) {
+        alert('Relatório exportado com sucesso para Excel!');
+    } else {
+        alert(`Erro ao exportar relatório para Excel: ${error}`);
+        console.error('Erro ao exportar Excel:', error);
+    }
 }
 
 // --- Lógica dos Gráficos ---

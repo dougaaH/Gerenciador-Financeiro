@@ -358,3 +358,32 @@ h3 {
   outline: none;
   border-color: var(--primary-accent);
 }
+
+/* --- Estilos da Tela de Relatórios --- */
+.report-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+  flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+}
+
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-filter label {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.date-filter input[type="date"] {
+  padding: 8px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: var(--font-family);
+}
