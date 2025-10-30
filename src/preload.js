@@ -30,4 +30,7 @@ contextBridge.exposeInMainWorld('api', {
 
   // Função para fechar a aplicação
   quitApp: () => ipcRenderer.send('quit-app'),
+
+  // Função para fechar a janela atual
+  closeWindow: () => ipcRenderer.send('window:close'),
 });

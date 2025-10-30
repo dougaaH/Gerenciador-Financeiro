@@ -1,5 +1,5 @@
 // main.js
-require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
+require('dotenv').config();
 const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const supabase = require('./src/database/connect');
 const path = require('path');
@@ -112,9 +112,22 @@ ipcMain.on('open-login-window', () => {
     });
 });
 
+// Função auxiliar para buscar transações
+async function getTransactionsFromDb() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return [];
+    const { data } = await supabase.from('transactions').select('*').eq('user_id', user.id);
+    return data || [];
+}
 // Ouve o evento para fechar a aplicação
 ipcMain.on('quit-app', () => {
     app.quit();
+});
+
+// Ouve o evento para fechar a janela que o enviou
+ipcMain.on('window:close', (event) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+    win.close();
 });
 
 // --- Template do Menu Superior ---
@@ -223,9 +236,7 @@ ipcMain.handle('db:add-transaction', async (event, transaction) => {
 
 // Handlers para o CRUD
 ipcMain.handle('db:get-transactions', async () => {
-    const { data, error } = await supabase.from('transactions').select('*');
-    if (error) console.error('Erro ao buscar transações:', error);
-    return data;
+    return await getTransactionsFromDb();
 });
 
 ipcMain.handle('db:delete-transaction', async (event, id) => {

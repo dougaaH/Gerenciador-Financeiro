@@ -1,0 +1,127 @@
+/* src/views/style.css */
+
+/* --- Variáveis de Cor (Consistente com o dashboard) --- */
+:root {
+  --primary-dark: #0a1931;
+  --primary-accent: #50c878; /* Verde Menta */
+  --text-light: #f1f1f1;
+  --border-color: #e2e8f0;
+  --background-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--primary-dark);
+  color: var(--text-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  -webkit-app-region: drag; /* Permite arrastar a janela */
+}
+
+.auth-container {
+  -webkit-app-region: no-drag; /* Área interna não arrastável */
+  text-align: center;
+  padding: 40px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  width: 320px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  transition: border-color 0.2s ease;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-decoration: none;
+  color: white;
+}
+
+.btn-primary {
+  background: var(--primary-accent);
+}
+.btn-primary:hover {
+  background: #45b369;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+p#message {
+  margin-top: 15px;
+  min-height: 20px;
+}
+
+a {
+  color: var(--primary-accent);
+  text-decoration: none;
+  margin-top: 20px;
+  display: inline-block;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Adicione este trecho ao seu arquivo src/views/style.css */
+.form-options {
+  display: flex;
+  width: 100%; /* Garante que o contêiner ocupe toda a largura */
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-start; /* Alinha o conteúdo à esquerda */
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+  box-sizing: border-box; /* Garante que o padding seja incluído na largura */
+}
+
+.form-options label {
+  cursor: pointer;
+}
+
+.form-options input[type="checkbox"] {
+  width: auto; /* Impede que o checkbox ocupe 100% da largura */
+}

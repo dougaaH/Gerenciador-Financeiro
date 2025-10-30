@@ -3,29 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <title>Cadastro</title>
-    <!-- Você pode usar o mesmo CSS do login ou criar um novo -->
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Criar Conta</h1>
-    <form id="register-form">
-      <input type="email" id="email" placeholder="Seu melhor e-mail" required />
-      <input
-        type="password"
-        id="password"
-        placeholder="Crie uma senha forte"
-        required
-      />
-      <button type="submit">Cadastrar</button>
-    </form>
-    <button
-      id="exit-app-btn"
-      style="background-color: #6c757d; margin-top: 10px"
-    >
-      Sair
-    </button>
-    <p id="message" style="color: red"></p>
-    <a href="#" id="go-to-login">Já tem uma conta? Faça login</a>
-    <script src="../renderer/register.js"></script>
+    <div class="auth-container">
+      <h1>Criar Conta</h1>
+      <form id="register-form">
+        <input
+          type="email"
+          id="email"
+          placeholder="Seu melhor e-mail"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          placeholder="Crie uma senha forte"
+          required
+        />
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+        <button type="button" id="exit-app-btn" class="btn btn-secondary">
+          Sair
+        </button>
+      </form>
+      <p id="message" style="color: red"></p>
+      <a href="#" id="go-to-login">Já tem uma conta? Faça login</a>
+      <script src="../renderer/register.js"></script>
+    </div>
   </body>
 </html>

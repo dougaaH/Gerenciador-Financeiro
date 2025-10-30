@@ -5,39 +5,147 @@
     <link rel="stylesheet" href="../assets/dashboard.css" />
   </head>
   <body>
-    <div class="main-container">
-      <div class="content-column">
-        <div class="header">
-          <h1>Dashboard</h1>
-          <!-- Botão principal com a nova classe -->
+    <!-- Barra Lateral de Navegação (Sidebar) -->
+    <div class="sidebar">
+      <div class="sidebar-logo">FinanceirApp</div>
+      <nav class="sidebar-nav">
+        <div id="nav-dashboard" class="nav-item active">
+          <!-- Ícone do mockup -->
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          Dashboard
+        </div>
+        <div id="nav-transactions" class="nav-item">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+          Transações
+        </div>
+        <div id="nav-reports" class="nav-item">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M3 3v18h18" />
+            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+          </svg>
+          Relatórios
+        </div>
+      </nav>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+      <!-- Tela 1: Dashboard (Visível por padrão) -->
+      <div id="dashboard-view" class="view">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Dashboard Financeiro</h1>
           <button id="add-transaction-btn" class="btn btn-primary">
-            Adicionar Nova Transação
+            Nova Transação
           </button>
         </div>
 
-        <!-- Tabela para listar transações -->
-        <h2>Transações Recentes</h2>
-        <!-- Tabela com a nova classe do UI Kit -->
-        <table id="transactions-table" class="data-table">
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Valor</th>
-              <th>Tipo</th>
-              <th>Categoria</th>
-              <th>Data</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Linhas serão inseridas via JS -->
-          </tbody>
-        </table>
+        <div class="balance-card">
+          <div class="balance-label">Saldo Atual</div>
+          <div class="balance-amount" id="balance-amount">R$ 0,00</div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="grid-card chart-card">
+            <h3>Gastos por Categoria</h3>
+            <div class="chart-container">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+          <div class="grid-card chart-card">
+            <h3>Receitas vs. Despesas</h3>
+            <div class="chart-container">
+              <canvas id="summaryChart"></canvas>
+            </div>
+          </div>
+          <div class="grid-card chart-card balance-evolution-card">
+            <h3>Evolução do Saldo</h3>
+            <div class="chart-container">
+              <canvas id="balanceEvolutionChart"></canvas>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="sidebar-column">
-        <h2>Resumo</h2>
-        <canvas id="myChart"></canvas>
+      <!-- Tela 2: Todas as Transações (Escondida por padrão) -->
+      <div id="transactions-view" class="view view-hidden">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Todas as Transações</h1>
+        </div>
+        <div class="table-controls">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar por descrição..."
+          />
+        </div>
+
+        <div class="table-container-full">
+          <table id="all-transactions-table" class="data-table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+                <th>Categoria</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Conteúdo será preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tela 3: Relatórios (Escondida por padrão) -->
+      <div id="reports-view" class="view view-hidden">
+        <h1 class="dashboard-title">Relatórios Mensais</h1>
+        <div class="grid-card" style="margin-top: 20px">
+          <h3>Resumo Mensal</h3>
+          <table id="reports-table" class="data-table">
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Total Receitas</th>
+                <th>Total Despesas</th>
+                <th>Saldo do Mês</th>
+              </tr>
+            </thead>
+            <tbody id="reports-table-body">
+              <!-- Conteúdo será preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 

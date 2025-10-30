@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <title>Login</title>
     <link rel="stylesheet" href="style.css" />
-    <!-- Adicione seu CSS -->
   </head>
   <body>
-    <h1>Login</h1>
-    <form id="login-form">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Senha" required />
-      <button type="submit">Entrar</button>
-    </form>
-    <p id="error-message" style="color: red"></p>
-    <br />
-    <a href="#" id="go-to-register">Não tem uma conta? Cadastre-se</a>
-    <script src="../renderer/login.js"></script>
+    <div class="auth-container">
+      <h1>Bem-vindo de volta!</h1>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="E-mail" required />
+        <input type="password" id="password" placeholder="Senha" required />
+        <div class="form-options">
+          <input type="checkbox" id="remember-me" />
+          <label for="remember-me">Lembrar de mim</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <button type="button" id="close-window-btn" class="btn btn-secondary">Fechar</button>
+      </form>
+      <p id="message" style="color: red"></p>
+      <a href="#" id="go-to-register">Não tem uma conta? Cadastre-se</a>
+      <script src="../renderer/login.js"></script>
+    </div>
   </body>
 </html>

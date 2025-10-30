@@ -17,8 +17,6 @@
 /* --- Estilos Globais --- */
 body {
   box-sizing: border-box;
-  margin: 0;
-  padding: 20px;
   margin: 0; /* Removemos o padding para o layout ocupar a tela toda */
   font-family: var(--font-family);
   background: var(--background-light);
@@ -26,29 +24,57 @@ body {
   line-height: 1.6;
   display: flex; /* Para o layout de sidebar + conteúdo */
   height: 100vh;
-  overflow: hidden;
 }
 
 h1,
-h2 {
-h1, h2, h3 {
+h2,
+h3 {
   color: var(--primary-dark);
 }
 
-/* --- Layout da Página Principal --- */
-.main-container {
-/* --- Layout do Dashboard (do Mockup) --- */
-.dashboard-container {
+/* --- Estilos das Telas (Views) --- */
+.view-hidden {
+  display: none;
+}
+
+/* Estilo para a tela de transações ocupar todo o espaço, mas apenas quando visível */
+#transactions-view:not(.view-hidden) {
   display: flex;
-  gap: 30px; /* Espaço entre as colunas */
-  width: 100%;
+  flex-direction: column;
+  /* A altura é calculada com base no conteúdo, o flex-grow no container da tabela cuida da expansão */
   height: 100%;
 }
 
-.content-column {
-  flex: 3; /* Ocupa 3/4 do espaço */
+.table-container-full {
+  flex-grow: 1; /* Faz o container crescer e ocupar o espaço vertical */
+  margin-top: 20px;
+  overflow: auto; /* Adiciona scroll vertical e horizontal quando necessário */
+  background: white;
+  border-radius: 12px;
+  padding: 20px; /* Adiciona espaçamento interno */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-controls {
+  margin-bottom: 15px;
+}
+
+#search-input {
+  width: 100%;
+  padding: 10px 15px;
+  box-sizing: border-box;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+#search-input:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+}
+
+/* --- Layout do Dashboard (do Mockup) --- */
 .sidebar {
-  width: 250px;
+  width: 220px;
   background: linear-gradient(180deg, #0a1931 0%, #1a2b4a 100%);
   color: white;
   padding: 30px 0;
@@ -57,13 +83,6 @@ h1, h2, h3 {
   flex-shrink: 0; /* Impede que o sidebar encolha */
 }
 
-.sidebar-column {
-  flex: 1; /* Ocupa 1/4 do espaço */
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  height: fit-content; /* A altura se ajusta ao conteúdo */
 .sidebar-logo {
   padding: 0 30px 30px;
   font-size: 1.3rem;
@@ -71,7 +90,6 @@ h1, h2, h3 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.header {
 .sidebar-nav {
   padding: 30px 0;
 }
@@ -100,14 +118,14 @@ h1, h2, h3 {
   flex: 1;
   padding: 30px;
   background: #fafafa;
-  overflow-y: auto; /* Permite scroll apenas no conteúdo principal */
+  /* Permite rolagem vertical quando o conteúdo excede a altura da tela */
+  overflow-y: auto;
 }
 
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   margin-bottom: 30px;
 }
 
@@ -138,6 +156,7 @@ h1, h2, h3 {
 
 .dashboard-grid {
   display: grid;
+  /* Cria uma grade responsiva: 2 colunas em telas maiores, 1 em telas menores */
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 20px;
 }
@@ -146,8 +165,27 @@ h1, h2, h3 {
   background: white;
   padding: 20px;
   border-radius: 12px;
+  /* A sombra foi movida para cá para ser consistente */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 350px; /* Define uma altura mínima, mas permite que cresça se necessário */
+}
+
+.chart-container {
+  position: relative;
+  flex-grow: 1; /* Faz o container do gráfico crescer para preencher o card */
+  width: 100%;
+}
+
+/* Faz o card de evolução do saldo ocupar toda a largura da grade */
+.dashboard-grid .balance-evolution-card {
+  grid-column: 1 / -1; /* Ocupa da primeira à última linha de coluna */
+}
+
 /* --- Botões --- */
 .btn {
   padding: 12px 24px;
@@ -195,11 +233,8 @@ h1, h2, h3 {
 #transactions-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
   margin-top: 0; /* Removido pois o card já tem espaçamento */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
+  /* A sombra e o radius agora estão no .grid-card pai */
 }
 
 #transactions-table th {
@@ -227,11 +262,47 @@ h1, h2, h3 {
   background: var(--border-color);
 }
 
+/* Estilos genéricos para todas as tabelas de dados */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* table-layout: auto; é o padrão, permitindo que o navegador ajuste as colunas */
+}
+
+.data-table th,
+.data-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+  text-align: left;
+  /* Força o conteúdo a ficar em uma única linha */
+  white-space: nowrap;
+  vertical-align: middle; /* Alinha o conteúdo verticalmente ao centro */
+}
+
+.data-table th {
+  background: var(--primary-dark);
+  color: white;
+  font-weight: 600;
+}
+
+.data-table tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.data-table tr:hover {
+  background: var(--border-color);
+}
+
+/* Define uma largura mínima para a coluna de descrição para que não fique muito espremida */
+#all-transactions-table th:nth-child(2) {
+  width: 40%;
+} /* Descrição */
+
 /* --- Estilo do Modal --- */
 .modal {
   display: none;
   position: fixed;
-  z-index: 100;
+  z-index: 1000; /* Aumenta o z-index para garantir que fique sobre tudo */
   left: 0;
   top: 0;
   width: 100%;
