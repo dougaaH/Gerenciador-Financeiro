@@ -349,6 +349,16 @@ function initializeCharts() {
     });
 }
 
+// Nova paleta de cores para gastos (evitando verde)
+const expenseCategoryColors = {
+    'alimentacao': '#FF6384', // Vermelho Suave
+    'moradia': '#FF9F40',    // Laranja
+    'transporte': '#FFCD56', // Amarelo
+    'lazer': '#4BC0C0',      // Ciano/Turquesa
+    'saude': '#9966FF',      // Roxo
+    'outros': '#C9CBCF',     // Cinza
+};
+
 const categoryColors = {
     'alimentacao': '#E57373', 'moradia': '#81C784', 'transporte': '#64B5F6',
     'lazer': '#FFD54F', 'saude': '#4DB6AC', 'salario': '#50C878', 'outros': '#B0BEC5',
@@ -358,7 +368,8 @@ function updateCategoryChart(gastosPorCategoria) {
     if (!categoryChart) return;
     const labels = Object.keys(gastosPorCategoria);
     const data = Object.values(gastosPorCategoria);
-    const backgroundColors = labels.map(label => categoryColors[label] || categoryColors['outros']);
+    // Usa a nova paleta de cores específica para gastos
+    const backgroundColors = labels.map(label => expenseCategoryColors[label] || expenseCategoryColors['outros']);
     categoryChart.data.labels = labels;
     categoryChart.data.datasets[0].data = data;
     categoryChart.data.datasets[0].backgroundColor = backgroundColors;
